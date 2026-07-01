@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khmer Picker - Random Name & Group Generator</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <header class="top-nav glass-panel">
+        <div class="nav-brand">
+            <img src="https://flagcdn.com/w40/kh.png" alt="Cambodia" style="width: 30px; height: 20px; border-radius: 3px;"> Khmer Picker
+        </div>
+        <div class="nav-menu">
+            <button id="nav-new-wheel" class="nav-btn"><i class="fa-solid fa-clock-rotate-left"></i> ជម្រះកង់</button>
+            <div class="nav-dropdown">
+                <button id="nav-tools" class="nav-btn"><i class="fa-solid fa-wrench"></i> ឧបករណ៍ផ្សេងៗ <i class="fa-solid fa-caret-down"></i></button>
+                <div class="dropdown-content glass-panel">
+                    <a href="#" id="tool-name"><i class="fa-solid fa-user-pen"></i> ចាប់ឈ្មោះ (Name Picker)</a>
+                    <a href="#" id="tool-team"><i class="fa-solid fa-users"></i> ចាប់ក្រុម (Team Picker)</a>
+                    <div class="divider"></div>
+                    <a href="#" id="tool-yesno"><i class="fa-solid fa-thumbs-up"></i> ចាប់បាទ/ទេ (Yes/No)</a>
+                    <a href="#" id="tool-number"><i class="fa-solid fa-hashtag"></i> ចាប់លេខ (Number Picker)</a>
+                    <a href="#" id="tool-letter"><i class="fa-solid fa-a"></i> ចាប់អក្សរ (Letter Picker)</a>
+                </div>
+            </div>
+            <button id="nav-settings" class="nav-btn"><i class="fa-solid fa-gear"></i> ការកំណត់</button>
+        </div>
+    </header>
+
+    <div class="app-container">
+        <!-- Left Panel: Inputs -->
+        <aside class="left-panel glass-panel">
+            <div class="panel-header">
+                <div class="class-selector-group">
+                    <select id="class-select" class="class-select">
+                        <!-- Options will be populated by JS -->
+                    </select>
+                    <button id="add-class-btn" class="icon-btn" title="បង្កើតថ្នាក់ថ្មី"><i class="fa-solid fa-plus"></i></button>
+                    <button id="delete-class-btn" class="icon-btn danger" title="លុបថ្នាក់នេះ"><i class="fa-solid fa-trash-can"></i></button>
+                </div>
+            </div>
+            
+            <form id="entry-form" class="entry-form">
+                <div class="input-group">
+                    <textarea id="name-input" placeholder="វាយបញ្ចូលឈ្មោះនៅទីនេះ... (មួយឈ្មោះក្នុងមួយបន្ទាត់)" rows="4"></textarea>
+                    <div class="add-btn-group">
+                        <button id="add-btn" class="primary-btn"><i class="fa-solid fa-plus"></i> បញ្ចូលឈ្មោះ</button>
+                        <button id="make-group-btn" class="secondary-btn"><i class="fa-solid fa-users"></i> ចាប់ជាក្រុម</button>
+                    </div>
+                </div>
+            </form>
+
+            <div class="list-header">
+                <h3>បញ្ជីឈ្មោះសិស្ស (<span id="count">0</span>)</h3>
+            </div>
+            
+            <div id="search-container" class="search-container">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" id="search-input" placeholder="ស្វែងរកឈ្មោះ...">
+            </div>
+            
+            <div class="entries-list" id="entries-list">
+                <!-- Entries will be appended here -->
+                <div class="empty-state">គ្មានទិន្នន័យ។ សូមបញ្ចូលឈ្មោះនៅខាងលើ!</div>
+            </div>
+        </aside>
+
+        <!-- Right Panel: Wheel -->
+        <main class="right-panel">
+            <div class="top-controls">
+                <button id="toggle-panel-btn" class="control-btn" title="លាក់/បង្ហាញបញ្ជី"><i class="fa-solid fa-eye-slash"></i></button>
+                <button id="fullscreen-btn" class="control-btn" title="ពេញអេក្រង់"><i class="fa-solid fa-expand"></i></button>
+            </div>
+            
+            <div class="wheel-container glass-panel">
+                <div class="canvas-wrapper">
+                    <canvas id="wheel" width="500" height="500"></canvas>
+                    <!-- Center button inside wheel or separate -->
+                    <button id="spin-btn-center" class="spin-btn-center">
+                        <i class="fa-solid fa-play"></i>
+                        វិល
+                    </button>
+                    <!-- Pointer Arrow -->
+                    <div class="arrow"></div>
+                </div>
+                <div class="instruction">
+                    <i class="fa-regular fa-lightbulb"></i> ចុចប៊ូតុង "វិល" ឬចុចលើកង់ដើម្បីចាប់ផ្ដើម
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Winner Modal -->
+    <div id="winner-modal" class="modal hidden">
+        <div class="modal-content glass-panel">
+            <h2 id="winner-announcement">សូមអបអរសាទរ!</h2>
+            <div id="winner-name" class="winner-name">អ្នកឈ្នះ</div>
+            <div class="modal-actions">
+                <button id="remove-winner-btn" class="danger-btn"><i class="fa-solid fa-trash"></i> លុបឈ្មោះនេះ</button>
+                <button id="close-modal-btn" class="secondary-btn">បិទ</button>
+            </div>
+            <button id="reveal-btn" class="primary-btn hidden" style="margin: 15px auto 0; display: block; width: 80%;">បង្ហាញលទ្ធផល</button>
+        </div>
+    </div>
+
+    <!-- Group Config Modal -->
+    <div id="group-config-modal" class="modal hidden">
+        <div class="modal-content glass-panel">
+            <h2><i class="fa-solid fa-users-gear"></i> កំណត់ការចាប់ក្រុម</h2>
+            <div class="group-config-options">
+                <div class="config-group">
+                    <label for="group-count">ចំនួនក្រុមសរុប៖</label>
+                    <input type="number" id="group-count" min="1" placeholder="ឧ. ៣ ក្រុម">
+                </div>
+                <div class="config-or">ឬ</div>
+                <div class="config-group">
+                    <label for="member-count">ចំនួនសមាជិកក្នុងមួយក្រុម៖</label>
+                    <input type="number" id="member-count" min="1" placeholder="ឧ. ៥ នាក់">
+                </div>
+            </div>
+            <p class="config-hint">* សូមបំពេញតែមួយប៉ុណ្ណោះ ប្រព័ន្ធនឹងគណនាដោយស្វ័យប្រវត្តិ។</p>
+            <div class="modal-actions">
+                <button id="generate-groups-btn" class="primary-btn"><i class="fa-solid fa-shuffle"></i> ចាប់ផ្ដើមបែងចែក</button>
+                <button id="close-config-btn" class="secondary-btn">បោះបង់</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Group Result Modal -->
+    <div id="group-result-modal" class="modal hidden">
+        <div class="modal-content glass-panel result-modal-content">
+            <div class="result-header">
+                <h2 id="group-result-title"><i class="fa-solid fa-users"></i> លទ្ធផលចាប់ក្រុម</h2>
+                <button id="close-result-btn" class="close-icon-btn"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="group-results-container" class="group-results-container">
+                <!-- Groups will be injected here -->
+            </div>
+            <div class="modal-actions full-width-actions">
+                <button id="export-image-btn" class="primary-btn"><i class="fa-solid fa-camera"></i> ទាញយករូបភាព</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal hidden">
+        <div class="modal-content glass-panel">
+            <h2><i class="fa-solid fa-gear"></i> ការកំណត់កង់វិល</h2>
+            <div class="settings-list" style="text-align: left; margin: 20px 0;">
+                <label class="toggle-label" title="លាក់ឈ្មោះសិស្សលើកង់" style="display: flex; gap: 10px; margin-bottom: 15px; font-size: 1.1rem; cursor: pointer;">
+                    <input type="checkbox" id="chk-mystery-wheel" style="width: 20px; height: 20px;">
+                    <span><i class="fa-solid fa-circle-question"></i> កង់អាថ៌កំបាំង (លាក់ឈ្មោះលើកង់)</span>
+                </label>
+                <label class="toggle-label" title="លាក់ឈ្មោះពេលកង់ឈប់" style="display: flex; gap: 10px; margin-bottom: 15px; font-size: 1.1rem; cursor: pointer;">
+                    <input type="checkbox" id="chk-mystery-result" style="width: 20px; height: 20px;">
+                    <span><i class="fa-solid fa-gift"></i> លទ្ធផលអាថ៌កំបាំង (ទាល់តែចុចបង្ហាញ)</span>
+                </label>
+                <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-direction: column;">
+                    <span style="font-size: 1.1rem; font-weight: bold;"><i class="fa-solid fa-wand-magic-sparkles"></i> សកម្មភាពរហ័ស (Quick Actions)</span>
+                    <div style="display: flex; gap: 10px; margin-top: 5px;">
+                        <button id="opt-sort-az" class="secondary-btn" style="flex: 1; padding: 10px;"><i class="fa-solid fa-arrow-down-a-z"></i> តម្រៀប (A-Z)</button>
+                        <button id="opt-delete-empty" class="secondary-btn" style="flex: 1; padding: 10px;"><i class="fa-solid fa-eraser"></i> លុបឈ្មោះទទេរ</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button id="close-settings-btn" class="primary-btn">រួចរាល់</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Number Picker Modal -->
+    <div id="number-picker-modal" class="modal hidden">
+        <div class="modal-content glass-panel">
+            <h2><i class="fa-solid fa-hashtag"></i> កំណត់ការចាប់លេខ</h2>
+            <div class="group-config-options">
+                <div class="config-group">
+                    <label for="num-min">លេខចាប់ផ្ដើម៖</label>
+                    <input type="number" id="num-min" value="1" placeholder="ឧ. ១">
+                </div>
+                <div class="config-or">ដល់</div>
+                <div class="config-group">
+                    <label for="num-max">លេខបញ្ចប់៖</label>
+                    <input type="number" id="num-max" value="50" placeholder="ឧ. ៥០">
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button id="generate-numbers-btn" class="primary-btn"><i class="fa-solid fa-check"></i> បង្កើតលេខ</button>
+                <button id="close-number-btn" class="secondary-btn">បោះបង់</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="app-footer">
+        Powered by: Antigravity &amp; Prepared by: Mr. Im Kemhong (Sok Ann Samrong)
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
