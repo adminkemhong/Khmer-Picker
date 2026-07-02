@@ -730,24 +730,6 @@ body {
     margin-top: 20px;
 }
 
-.primary-btn {
-    padding: 12px 40px;
-    background: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 30px;
-    font-family: var(--font-family);
-    font-size: 1.1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.primary-btn:hover {
-    background: var(--primary-hover);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(255, 51, 102, 0.4);
-}
 
 .blue-btn {
     background: var(--secondary-color);
