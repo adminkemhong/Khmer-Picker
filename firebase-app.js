@@ -26,7 +26,6 @@ const googleProvider = new GoogleAuthProvider();
 const authModal = document.getElementById('auth-modal');
 const closeAuthBtn = document.getElementById('close-auth-btn');
 const navLoginBtn = document.getElementById('nav-login');
-const navLoginText = navLoginBtn.querySelector('span');
 
 const authEmail = document.getElementById('auth-email');
 const authPassword = document.getElementById('auth-password');
@@ -120,7 +119,14 @@ authLogoutBtn.addEventListener('click', async () => {
 onAuthStateChanged(auth, async (user) => {
     if (user) {
         currentUser = user;
-        navLoginText.innerText = user.email.split('@')[0];
+        const displayName = user.email.split('@')[0];
+        
+        if (user.photoURL) {
+            navLoginBtn.innerHTML = `<img src="${user.photoURL}" alt="Profile" style="width:22px;height:22px;border-radius:50%;margin-right:8px;vertical-align:middle;object-fit:cover;"> <span>${displayName}</span>`;
+        } else {
+            navLoginBtn.innerHTML = `<i class="fa-solid fa-user" style="margin-right:8px;"></i> <span>${displayName}</span>`;
+        }
+        
         authLogoutBtn.classList.remove('hidden');
         document.getElementById('auth-login-view').style.display = 'none';
         authTitle.innerText = "គណនីរបស់អ្នក";
@@ -129,7 +135,7 @@ onAuthStateChanged(auth, async (user) => {
         await loadDataFromCloud(user.uid);
     } else {
         currentUser = null;
-        navLoginText.innerText = 'ចូលគណនី';
+        navLoginBtn.innerHTML = `<i class="fa-solid fa-user" style="margin-right:8px;"></i> <span>ចូលគណនី</span>`;
         authLogoutBtn.classList.add('hidden');
         document.getElementById('auth-login-view').style.display = 'block';
         authTitle.innerHTML = '<i class="fa-solid fa-user-lock"></i> ចូលគណនី';
