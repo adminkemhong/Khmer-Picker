@@ -247,10 +247,10 @@ body {
 }
 
 .add-btn-group {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     gap: 10px;
     margin-top: 5px;
-    align-items: stretch;
 }
 
 .primary-btn, .secondary-btn, .danger-btn {
