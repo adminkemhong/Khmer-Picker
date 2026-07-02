@@ -110,19 +110,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const loadData = () => {
         const savedClasses = localStorage.getItem('pickerClasses');
         if (savedClasses) {
-            classes = JSON.parse(savedClasses);
+            let loadedClasses = JSON.parse(savedClasses);
+            // Remove the default empty 'ថ្នាក់ទី១' if they haven't added anything to it
+            classes = loadedClasses.filter(c => !(c.name === 'ថ្នាក់ទី១' && c.entries.length === 0));
+            
             currentClassId = localStorage.getItem('pickerCurrentClassId');
             if (!currentClassId && classes.length > 0) currentClassId = classes[0].id;
         } else {
             // Migration from old version
             const oldEntries = localStorage.getItem('pickerEntries');
-            let initialEntries = [];
             if (oldEntries) {
-                initialEntries = JSON.parse(oldEntries);
+                const initialEntries = JSON.parse(oldEntries);
+                const newClass = { id: Date.now().toString(), name: 'ថ្នាក់ទី១', entries: initialEntries };
+                classes = [newClass];
+                currentClassId = newClass.id;
+            } else {
+                classes = [];
+                currentClassId = null;
             }
-            const newClass = { id: Date.now().toString(), name: 'ថ្នាក់ទី១', entries: initialEntries };
-            classes = [newClass];
-            currentClassId = newClass.id;
         }
         
         if (!classes.find(c => c.id === currentClassId) && classes.length > 0) {
@@ -181,7 +186,9 @@ document.addEventListener('DOMContentLoaded', () => {
         classSelect.innerHTML = '';
         if (classes.length === 0) {
             const opt = document.createElement('option');
-            opt.textContent = 'សូមបង្កើតថ្នាក់...';
+            opt.textContent = 'បន្ថែមថ្នាក់';
+            opt.disabled = true;
+            opt.selected = true;
             classSelect.appendChild(opt);
             return;
         }
