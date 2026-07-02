@@ -31,6 +31,7 @@
                 </div>
             </div>
             <button id="nav-settings" class="nav-btn"><i class="fa-solid fa-gear"></i> ការកំណត់</button>
+            <button id="nav-login" class="nav-btn"><i class="fa-solid fa-user"></i> <span>ចូលគណនី</span></button>
         </div>
     </header>
 
@@ -198,10 +199,42 @@
         </div>
     </div>
 
+    <!-- Auth Modal -->
+    <div id="auth-modal" class="modal hidden">
+        <div class="modal-content glass-panel" style="max-width: 400px;">
+            <h2 id="auth-title"><i class="fa-solid fa-user-lock"></i> ចូលគណនី</h2>
+            
+            <div id="auth-login-view" style="display: block; margin-top: 20px;">
+                <div class="input-group" style="margin-bottom: 15px;">
+                    <input type="email" id="auth-email" placeholder="អ៊ីមែល (Email)" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); color: white;">
+                </div>
+                <div class="input-group" style="margin-bottom: 20px;">
+                    <input type="password" id="auth-password" placeholder="លេខសម្ងាត់ (Password)" style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.1); color: white;">
+                </div>
+                
+                <button id="auth-submit-btn" class="primary-btn" style="width: 100%; margin-bottom: 15px;">ចូលប្រើប្រាស់</button>
+                <div style="text-align: center; margin-bottom: 15px; color: var(--text-secondary);">ឬ</div>
+                <button id="auth-google-btn" class="secondary-btn" style="width: 100%; margin-bottom: 20px; background: white; color: #333; border: none; display: flex; justify-content: center; align-items: center; gap: 10px;">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google" style="width: 18px;"> បន្តជាមួយ Google
+                </button>
+                
+                <p style="text-align: center; font-size: 0.9rem;">
+                    មិនទាន់មានគណនី? <a href="#" id="auth-switch-mode" style="color: var(--secondary-color);">ចុះឈ្មោះទីនេះ</a>
+                </p>
+            </div>
+            
+            <div class="modal-actions" style="justify-content: center; margin-top: 25px;">
+                <button id="close-auth-btn" class="secondary-btn">បោះបង់</button>
+                <button id="auth-logout-btn" class="danger-btn hidden">ចាកចេញ (Logout)</button>
+            </div>
+        </div>
+    </div>
+
     <footer class="app-footer">
         Powered by: Antigravity &amp; Prepared by: Mr. Im Kemhong (Sok Ann Samrong)
     </footer>
 
+    <script type="module" src="firebase-app.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

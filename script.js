@@ -145,6 +145,25 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         localStorage.setItem('pickerMysteryWheel', isMysteryWheel);
         localStorage.setItem('pickerMysteryResult', isMysteryResult);
+        
+        // Sync to cloud if Firebase is available and logged in
+        if (window.FirebaseManager) {
+            window.FirebaseManager.saveData(classes);
+        }
+    };
+    
+    // Exposed function for Firebase to sync data downwards
+    window.syncDataFromCloud = (cloudClasses) => {
+        if (!cloudClasses || !Array.isArray(cloudClasses)) return;
+        classes = cloudClasses;
+        if (classes.length > 0) {
+            const currentExists = classes.find(c => c.id === currentClassId);
+            if (!currentExists) currentClassId = classes[0].id;
+        } else {
+            currentClassId = null;
+        }
+        localStorage.setItem('pickerClasses', JSON.stringify(classes));
+        updateUI();
     };
 
     const getCurrentClass = () => {
