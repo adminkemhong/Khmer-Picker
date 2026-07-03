@@ -66,6 +66,7 @@ body {
     display: flex;
     align-items: center;
     gap: 10px;
+    white-space: nowrap;
 }
 
 .nav-menu {
@@ -790,6 +791,28 @@ body {
         border-top: 15px solid transparent;
         border-bottom: 15px solid transparent;
         border-right: 25px solid var(--primary-color);
+    }
+}
+
+@media (max-width: 768px) {
+    .top-nav {
+        padding: 10px 15px;
+    }
+    
+    .nav-brand {
+        font-size: 1.2rem;
+    }
+    
+    .nav-menu {
+        gap: 5px;
+    }
+    
+    .nav-btn {
+        padding: 10px;
+    }
+    
+    .nav-btn span, #nav-tools .fa-caret-down {
+        display: none;
     }
 }
 
